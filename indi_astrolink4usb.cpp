@@ -831,7 +831,7 @@ bool IndiAstrolink4USB::sensorRead()
             {
                 SensorSkyN[0].value = std::stod(result[Q_SKYSENS_TEMP]);
                 SensorSkyN[1].value = std::stod(result[Q_SKYSENS_AMB]) - std::stod(result[Q_SKYSENS_TEMP]);
-                SensorSkyN.s = IPS_OK;
+                SensorSkyNP.s = IPS_OK;
                 IDSetNumber(&SensorSkyNP, nullptr);
             }
             else

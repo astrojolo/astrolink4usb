@@ -44,7 +44,9 @@
 #define Q_SENS1_HUM			6
 #define Q_SENS1_DEW			7
 #define Q_SENS2_TYPE		8
-#define Q_SENS2_TEMP		9
+#define Q_SENS2_TEMP		27
+#define Q_SENS2_HUM         28
+#define Q_SENS2_DEW         29
 #define Q_PWM1				10
 #define Q_PWM2				11
 #define Q_OUT1				12
@@ -58,6 +60,9 @@
 #define Q_COMP_DIFF			20
 #define Q_OP_FLAG			21
 #define Q_OP_VALUE			22
+#define Q_SKYSENS_TYPE      23
+#define Q_SKYSENS_TEMP      24
+#define Q_SKYSENS_AMB       25
 
 #define U_MAX_POS			1
 #define U_SPEED				2

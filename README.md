@@ -7,13 +7,13 @@ To start you need to download and install INDI environment. See [INDI page](http
 Then AstroLink INDI driver needs to be fetched and installed:
 
 ```
-git clone https://github.com/astrojolo/astrolink4usb.git
+git clone https://github.com/astrojolo/astrolink4usb
 cd astrolink4usb
 mkdir build
 cd build
-cmake ..
+cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
-make install
+sudo make install
 ```
 
 Then indiserver needs to be started with AstroLink drivers:

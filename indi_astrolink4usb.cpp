@@ -817,6 +817,8 @@ bool IndiAstrolink4USB::sensorRead()
             if(std::stod(result[Q_SENS2_TYPE]) > 0)
             {
                 Sensor2N[0].value = std::stod(result[Q_SENS2_TEMP]);
+                Sensor2N[1].value = std::stod(result[Q_SENS2_HUM]);
+                Sensor2N[2].value = std::stod(result[Q_SENS2_DEW]);
                 Sensor2NP.s = IPS_OK;
                 IDSetNumber(&Sensor2NP, nullptr);
             }
@@ -824,6 +826,18 @@ bool IndiAstrolink4USB::sensorRead()
             {
                 Sensor2NP.s = IPS_IDLE;
             }
+
+            if(std::stod(result[Q_SKYSENS_TYPE]) > 0)
+            {
+                SensorSkyN[0].value = std::stod(result[Q_SKYSENS_TEMP]);
+                SensorSkyN[1].value = std::stod(result[Q_SKYSENS_AMB]) - std::stod(result[Q_SKYSENS_TEMP]);
+                SensorSkyN.s = IPS_OK;
+                IDSetNumber(&SensorSkyN, nullptr);
+            }
+            else
+            {
+                SensorSkyN.s = IPS_IDLE;
+            }            
                 
             PWMN[0].value = std::stod(result[Q_PWM1]);
             PWMN[1].value = std::stod(result[Q_PWM2]);

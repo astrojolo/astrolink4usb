@@ -256,28 +256,28 @@ bool IndiAstrolink4USB::updateProperties()
 
     if (isConnected())
     {
-    	defineNumber(&FocusPosMMNP);
+    	defineProperty(&FocusPosMMNP);
         FI::updateProperties();
         WI::updateProperties();
-        defineSwitch(&Power1SP);
-        defineSwitch(&Power2SP);
-        defineSwitch(&Power3SP);
-        defineSwitch(&AutoPWMSP);
-        defineNumber(&Sensor2NP);
-        defineNumber(&SensorSkyNP);
-        defineNumber(&PWMNP);
-        defineNumber(&PowerDataNP);
-        defineNumber(&FocuserSettingsNP);
-        defineSwitch(&FocuserModeSP);
-        defineSwitch(&FocuserCompModeSP);
-		defineSwitch(&FocuserHoldSP);
-        defineSwitch(&FocuserManualSP);
-        defineNumber(&CompensationValueNP);
-        defineSwitch(&CompensateNowSP);
-        defineSwitch(&PowerDefaultOnSP);
-        defineNumber(&OtherSettingsNP);
-        defineText(&PowerControlsLabelsTP);
-        defineSwitch(&BuzzerSP);
+        defineProperty(&Power1SP);
+        defineProperty(&Power2SP);
+        defineProperty(&Power3SP);
+        defineProperty(&AutoPWMSP);
+        defineProperty(&Sensor2NP);
+        defineProperty(&SensorSkyNP);
+        defineProperty(&PWMNP);
+        defineProperty(&PowerDataNP);
+        defineProperty(&FocuserSettingsNP);
+        defineProperty(&FocuserModeSP);
+        defineProperty(&FocuserCompModeSP);
+		defineProperty(&FocuserHoldSP);
+        defineProperty(&FocuserManualSP);
+        defineProperty(&CompensationValueNP);
+        defineProperty(&CompensateNowSP);
+        defineProperty(&PowerDefaultOnSP);
+        defineProperty(&OtherSettingsNP);
+        defineProperty(&PowerControlsLabelsTP);
+        defineProperty(&BuzzerSP);
     }
     else
     {

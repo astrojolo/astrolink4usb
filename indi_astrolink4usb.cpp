@@ -60,7 +60,7 @@ bool IndiAstrolink4USB::Handshake()
         }
         else
         {
-            SetTimer(POLLMS);
+            SetTimer(getCurrentPollingPeriod());
             return true;
         }
     }
@@ -69,11 +69,11 @@ bool IndiAstrolink4USB::Handshake()
 
 void IndiAstrolink4USB::TimerHit()
 {
-    if (isConnected())
-    {
-        sensorRead();
-        SetTimer(POLLMS);
-    }
+    if (!isConnected())
+        return;
+
+    sensorRead();
+    SetTimer(getCurrentPollingPeriod());
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -30,31 +30,6 @@
 //////////////////////////////////////////////////////////////////////
 std::unique_ptr<IndiAstrolink4USB> indiAstrolink4USB(new IndiAstrolink4USB());
 
-void ISGetProperties(const char *dev)
-{
-    indiAstrolink4USB->ISGetProperties(dev);
-}
-void ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int num)
-{
-    indiAstrolink4USB->ISNewSwitch(dev, name, states, names, num);
-}
-void ISNewText(const char *dev, const char *name, char *texts[], char *names[], int num)
-{
-    indiAstrolink4USB->ISNewText(dev, name, texts, names, num);
-}
-void ISNewNumber(const char *dev, const char *name, double values[], char *names[], int num)
-{
-    indiAstrolink4USB->ISNewNumber(dev, name, values, names, num);
-}
-void ISNewBLOB(const char *dev, const char *name, int sizes[], int blobsizes[], char *blobs[], char *formats[], char *names[], int num)
-{
-    indiAstrolink4USB->ISNewBLOB(dev, name, sizes, blobsizes, blobs, formats, names, num);
-}
-void ISSnoopDevice(XMLEle *root)
-{
-    indiAstrolink4USB->ISSnoopDevice(root);
-}
-
 //////////////////////////////////////////////////////////////////////
 ///Constructor
 //////////////////////////////////////////////////////////////////////

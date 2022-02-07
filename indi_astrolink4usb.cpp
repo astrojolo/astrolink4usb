@@ -692,9 +692,9 @@ bool IndiAstrolink4USB::sendCommand(const char *cmd, char *res)
     if (isSimulation())
     {
         if (strcmp(cmd, "#") == 0)
-            sprintf(res, "%s\n", "#:AstroLink4USB");
+            sprintf(res, "%s\n", "#:AstroLink4mini");
         if (strcmp(cmd, "q") == 0)
-            sprintf(res, "%s\n", "q:1234:0:1.47:1:2.12:45.1:-12.81:1:-25.22:45:0:0:0:1:12.1:5.0:1.12:13.41:0:34:0:0");
+            sprintf(res, "%s\n", "q:0:0:0.34:1:21.30:49.50:10.20:0:0.00:0:0:1:1:1:12.05:5.00:0.01:0.14:0:0:0:0:0:1037.50:1037.50:0:0.00:0.00:0.00:0:0.00");
         if (strcmp(cmd, "p") == 0)
             sprintf(res, "%s\n", "p:1234");
         if (strcmp(cmd, "i") == 0)

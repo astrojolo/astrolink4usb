@@ -30,31 +30,6 @@
 //////////////////////////////////////////////////////////////////////
 std::unique_ptr<IndiAstrolink4USB> indiAstrolink4USB(new IndiAstrolink4USB());
 
-void ISGetProperties(const char *dev)
-{
-    indiAstrolink4USB->ISGetProperties(dev);
-}
-void ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int num)
-{
-    indiAstrolink4USB->ISNewSwitch(dev, name, states, names, num);
-}
-void ISNewText(const char *dev, const char *name, char *texts[], char *names[], int num)
-{
-    indiAstrolink4USB->ISNewText(dev, name, texts, names, num);
-}
-void ISNewNumber(const char *dev, const char *name, double values[], char *names[], int num)
-{
-    indiAstrolink4USB->ISNewNumber(dev, name, values, names, num);
-}
-void ISNewBLOB(const char *dev, const char *name, int sizes[], int blobsizes[], char *blobs[], char *formats[], char *names[], int num)
-{
-    indiAstrolink4USB->ISNewBLOB(dev, name, sizes, blobsizes, blobs, formats, names, num);
-}
-void ISSnoopDevice(XMLEle *root)
-{
-    indiAstrolink4USB->ISSnoopDevice(root);
-}
-
 //////////////////////////////////////////////////////////////////////
 ///Constructor
 //////////////////////////////////////////////////////////////////////
@@ -85,7 +60,7 @@ bool IndiAstrolink4USB::Handshake()
         }
         else
         {
-            SetTimer(POLLMS);
+            SetTimer(getCurrentPollingPeriod());
             return true;
         }
     }
@@ -94,11 +69,11 @@ bool IndiAstrolink4USB::Handshake()
 
 void IndiAstrolink4USB::TimerHit()
 {
-    if (isConnected())
-    {
-        sensorRead();
-        SetTimer(POLLMS);
-    }
+    if (!isConnected())
+        return;
+
+    sensorRead();
+    SetTimer(getCurrentPollingPeriod());
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -717,9 +692,9 @@ bool IndiAstrolink4USB::sendCommand(const char *cmd, char *res)
     if (isSimulation())
     {
         if (strcmp(cmd, "#") == 0)
-            sprintf(res, "%s\n", "#:AstroLink4USB");
+            sprintf(res, "%s\n", "#:AstroLink4mini");
         if (strcmp(cmd, "q") == 0)
-            sprintf(res, "%s\n", "q:1234:0:1.47:1:2.12:45.1:-12.81:1:-25.22:45:0:0:0:1:12.1:5.0:1.12:13.41:0:34:0:0");
+            sprintf(res, "%s\n", "q:0:0:0.34:1:21.30:49.50:10.20:0:0.00:0:0:1:1:1:12.05:5.00:0.01:0.14:0:0:0:0:0:1037.50:1037.50:0:0.00:0.00:0.00:0:0.00");
         if (strcmp(cmd, "p") == 0)
             sprintf(res, "%s\n", "p:1234");
         if (strcmp(cmd, "i") == 0)

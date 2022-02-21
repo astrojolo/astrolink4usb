@@ -20,7 +20,7 @@
 #include "indicom.h"
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 3
+#define VERSION_MINOR 4
 
 #define ASTROLINK4_LEN 200
 #define ASTROLINK4_TIMEOUT 3
@@ -185,8 +185,19 @@ bool IndiAstrolink4USB::initProperties()
     IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);
 
     // Auto pwm
-    IUFillSwitch(&AutoPWMS[0], "PWMA_A", "A", ISS_OFF);
-    IUFillSwitch(&AutoPWMS[1], "PWMA_B", "B", ISS_OFF);
+    IUFillSwitch(&AutoPWMDefaultOnS[0], "PWMA_A_DEF_ON", "A", ISS_OFF);
+    IUFillSwitch(&AutoPWMDefaultOnS[1], "PWMA_B_DEF_ON", "B", ISS_OFF);
+    IUFillSwitchVector(&AutoPWMDefaultOnSP, AutoPWMDefaultOnS, 2, getDeviceName(), "AUTO_PWM_DEF_ON", "Auto PWM default ON", SETTINGS_TAB,
+                       IP_RW, ISR_NOFMANY, 60, IPS_IDLE);
+
+    ISState pwmAutoA = ISS_OFF;
+    IUGetConfigSwitch(getDeviceName(), AutoPWMDefaultOnSP.name, AutoPWMDefaultOnS[0].name, &pwmAutoA);
+
+    ISState pwmAutoB = ISS_OFF;
+    IUGetConfigSwitch(getDeviceName(), AutoPWMDefaultOnSP.name, AutoPWMDefaultOnS[1].name, &pwmAutoB);
+
+    IUFillSwitch(&AutoPWMS[0], "PWMA_A", "A", pwmAutoA);
+    IUFillSwitch(&AutoPWMS[1], "PWMA_B", "B", pwmAutoB);
     IUFillSwitchVector(&AutoPWMSP, AutoPWMS, 2, getDeviceName(), "AUTO_PWM", "Auto PWM", POWER_TAB, IP_RW, ISR_NOFMANY, 60, IPS_OK);
 
     IUFillNumber(&PowerDataN[POW_VIN], "VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
@@ -248,6 +259,7 @@ bool IndiAstrolink4USB::updateProperties()
         defineProperty(&CompensationValueNP);
         defineProperty(&CompensateNowSP);
         defineProperty(&PowerDefaultOnSP);
+        defineProperty(&AutoPWMDefaultOnSP);
         defineProperty(&OtherSettingsNP);
         defineProperty(&PowerControlsLabelsTP);
         defineProperty(&BuzzerSP);
@@ -267,6 +279,7 @@ bool IndiAstrolink4USB::updateProperties()
         deleteProperty(CompensateNowSP.name);
         deleteProperty(CompensationValueNP.name);
         deleteProperty(PowerDefaultOnSP.name);
+        deleteProperty(AutoPWMDefaultOnSP.name);
         deleteProperty(OtherSettingsNP.name);
         deleteProperty(BuzzerSP.name);
         deleteProperty(FocuserCompModeSP.name);
@@ -468,6 +481,16 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
             return true;
         }
 
+        // Auto PWM default on
+        if (!strcmp(name, AutoPWMDefaultOnSP.name))
+        {
+            IUUpdateSwitch(&AutoPWMDefaultOnSP, states, names, n);
+            AutoPWMDefaultOnSP.s = IPS_OK;
+            saveConfig();
+            IDSetSwitch(&AutoPWMDefaultOnSP, nullptr);
+            return true;
+        }
+
         // Buzzer
         if (!strcmp(name, BuzzerSP.name))
         {
@@ -585,6 +608,7 @@ bool IndiAstrolink4USB::saveConfigItems(FILE *fp)
     FI::saveConfigItems(fp);
 
     IUSaveConfigText(fp, &PowerControlsLabelsTP);
+    IUSaveConfigSwitch(fp, &AutoPWMDefaultOnSP);
     return true;
 }
 

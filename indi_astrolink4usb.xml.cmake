@@ -3,7 +3,7 @@
 <devGroup group="Auxiliary">
         <device label="AstroLink 4 USB">
                 <driver name="AstroLink4 USB">indi_astrolink4usb</driver>
-                <version>0.1</version>
+                <version>@ASTROLINK4_VERSION_MAJOR@.@ASTROLINK4_VERSION_MINOR@</version>
         </device>
 </devGroup>
 </driversList>

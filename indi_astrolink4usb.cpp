@@ -16,11 +16,9 @@
  Boston, MA 02110-1301, USA.
 *******************************************************************************/
 #include "indi_astrolink4usb.h"
+#include "config.h"
 
 #include "indicom.h"
-
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 4
 
 #define ASTROLINK4_LEN 200
 #define ASTROLINK4_TIMEOUT 3
@@ -35,7 +33,7 @@ std::unique_ptr<IndiAstrolink4USB> indiAstrolink4USB(new IndiAstrolink4USB());
 //////////////////////////////////////////////////////////////////////
 IndiAstrolink4USB::IndiAstrolink4USB() : FI(this), WI(this)
 {
-    setVersion(VERSION_MAJOR, VERSION_MINOR);
+    setVersion(ASTROLINK4_VERSION_MAJOR, ASTROLINK4_VERSION_MINOR);
 }
 
 const char *IndiAstrolink4USB::getDefaultName()

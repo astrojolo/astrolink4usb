@@ -1,13 +1,12 @@
-cmake_minimum_required(VERSION 2.4.7)
+cmake_minimum_required(VERSION 3.2)
 PROJECT(indi-astrolink4usb CXX C)
 
 set (ASTROLINK4_VERSION_MAJOR 0)
 set (ASTROLINK4_VERSION_MINOR 4)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
-set(BIN_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
+SET(CMAKE_CXX_STANDARD 11)
 
 find_package(INDI REQUIRED)
 

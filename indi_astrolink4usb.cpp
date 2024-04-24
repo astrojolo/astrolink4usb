@@ -822,15 +822,12 @@ bool IndiAstrolink4USB::sensorRead()
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
                 setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
-                ParametersNP.s = IPS_OK;
-                IDSetNumber(&ParametersNP, nullptr);
             }
             else
             {
                 setParameterValue("WEATHER_TEMPERATURE", 0.0);
                 setParameterValue("WEATHER_HUMIDITY", 0.0);
                 setParameterValue("WEATHER_DEWPOINT", 0.0);
-                ParametersNP.s = IPS_IDLE;
             }
 
             if (std::stod(result[Q_SENS2_TYPE]) > 0)

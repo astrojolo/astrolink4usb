@@ -303,7 +303,7 @@ bool IndiAstrolink4USB::ISNewNumber(const char *dev, const char *name, double va
         if (!strcmp(name, PWMNP.getName()))
         {
             bool allOk = true;
-            if (PWMNP[0].getvalue() != values[0])
+            if (PWMNP[0].getValue() != values[0])
             {
                 if (AutoPWMS[0].s == ISS_OFF)
                 {
@@ -831,7 +831,7 @@ bool IndiAstrolink4USB::sensorRead()
 
         float focuserPosition = std::stod(result[Q_STEPPER_POS]);
         FocusAbsPosNP[0].getValue() = focuserPosition;
-        FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
+        FocusPosMMNP[0].getValue = focuserPosition * FocuserSettingsNP[FS_STEP_SIZE].getValue / 1000.0;
         float stepsToGo = std::stod(result[Q_STEPS_TO_GO]);
         if (stepsToGo == 0)
         {
@@ -841,15 +841,18 @@ bool IndiAstrolink4USB::sensorRead()
                 MoveAbsFocuser(focuserPosition - backlashSteps);
             }
             FocusAbsPosNP.s = FocusRelPosNP.s = FocusPosMMNP.s = IPS_OK;
-            IDSetNumber(&FocusRelPosNP, nullptr);
+            //IDSetNumber(&FocusRelPosNP, nullptr);
+            FocusRelPosNP.apply();
         }
         else
         {
             FocusAbsPosNP.s = FocusRelPosNP.s = FocusPosMMNP.s = IPS_BUSY;
         }
-        IDSetNumber(&FocusPosMMNP, nullptr);
-        IDSetNumber(&FocusAbsPosNP, nullptr);
-        PowerDataN[POW_ITOT].value = std::stod(result[Q_CURRENT]);
+        //IDSetNumber(&FocusPosMMNP, nullptr);
+        //IDSetNumber(&FocusAbsPosNP, nullptr);
+        FocusPosMMNP.apply();
+        FocusAbsPosNP.apply();
+        PowerDataNP[POW_ITOT].setValue(std::stod(result[Q_CURRENT]));
 
         if (result.size() > 5)
         {

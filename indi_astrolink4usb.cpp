@@ -300,10 +300,10 @@ bool IndiAstrolink4USB::ISNewNumber(const char *dev, const char *name, double va
         char res[ASTROLINK4_LEN] = {0};
 
         // handle PWM
-        if (!strcmp(name, PWMNP.name))
+        if (!strcmp(name, PWMNP.getName()))
         {
             bool allOk = true;
-            if (PWMN[0].value != values[0])
+            if (PWMNP[0].getvalue() != values[0])
             {
                 if (AutoPWMS[0].s == ISS_OFF)
                 {
@@ -315,7 +315,7 @@ bool IndiAstrolink4USB::ISNewNumber(const char *dev, const char *name, double va
                     LOG_WARN("Cannot set PWM output, it is in AUTO mode.");
                 }
             }
-            if (PWMN[1].value != values[1])
+            if (PWMNP[1].getValue() != values[1])
             {
                 if (AutoPWMS[1].s == ISS_OFF)
                 {
@@ -329,14 +329,18 @@ bool IndiAstrolink4USB::ISNewNumber(const char *dev, const char *name, double va
             }
             PWMNP.s = (allOk) ? IPS_BUSY : IPS_ALERT;
             if (allOk)
-                IUUpdateNumber(&PWMNP, values, names, n);
-            IDSetNumber(&PWMNP, nullptr);
-            IDSetSwitch(&AutoPWMSP, nullptr);
+                PWMNP.update(values, names, n);
+                //IUUpdateNumber(&PWMNP, values, names, n);
+            //IDSetNumber(&PWMNP, nullptr);
+            //IDSetSwitch(&AutoPWMSP, nullptr);
+            PWMNP.apply();
+            AutoPWMSP.apply();
+
             return true;
         }
 
         // Focuser settings
-        if (!strcmp(name, FocuserSettingsNP.name))
+        if (!strcmp(name, FocuserSettingsNP.getName()))
         {
             bool allOk = true;
             std::map<int, std::string> updates;
@@ -356,8 +360,10 @@ bool IndiAstrolink4USB::ISNewNumber(const char *dev, const char *name, double va
             if (allOk)
             {
                 FocuserSettingsNP.s = IPS_BUSY;
-                IUUpdateNumber(&FocuserSettingsNP, values, names, n);
-                IDSetNumber(&FocuserSettingsNP, nullptr);
+                //IUUpdateNumber(&FocuserSettingsNP, values, names, n);
+                //IDSetNumber(&FocuserSettingsNP, nullptr);
+                FocuserSettingsNP.update(values, names, n);
+                FocuserSettingsNP.apply();
                 LOG_INFO(values[FS_COMPENSATION] > 0 ? "Temperature compensation is enabled." : "Temperature compensation is disabled.");
                 return true;
             }
@@ -376,8 +382,10 @@ bool IndiAstrolink4USB::ISNewNumber(const char *dev, const char *name, double va
             if (updateSettings("n", "N", updates))
             {
                 OtherSettingsNP.s = IPS_BUSY;
-                IUUpdateNumber(&OtherSettingsNP, values, names, n);
-                IDSetNumber(&OtherSettingsNP, nullptr);
+                //IUUpdateNumber(&OtherSettingsNP, values, names, n);
+                //IDSetNumber(&OtherSettingsNP, nullptr);
+                OtherSettingsNP.update(values, names, n);
+                OtherSettingsNP.apply();
                 return true;
             }
             OtherSettingsNP.s = IPS_ALERT;
@@ -401,68 +409,78 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
         char res[ASTROLINK4_LEN] = {0};
 
         // handle power line 1
-        if (!strcmp(name, Power1SP.name))
+        if (!strcmp(name, Power1SP.getName()))
         {
-            sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].name, names[0])) ? "0" : "1");
+            sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].getName(), names[0])) ? "0" : "1");
             bool allOk = sendCommand(cmd, res);
             Power1SP.s = allOk ? IPS_BUSY : IPS_ALERT;
             if (allOk)
-                IUUpdateSwitch(&Power1SP, states, names, n);
+                //IUUpdateSwitch(&Power1SP, states, names, n);
+                Power1SP.update(states, names, n);
 
-            IDSetSwitch(&Power1SP, nullptr);
+            //IDSetSwitch(&Power1SP, nullptr);
+            Power1SP.apply();
             return true;
         }
 
         // handle power line 2
-        if (!strcmp(name, Power2SP.name))
+        if (!strcmp(name, Power2SP.getName()))
         {
-            sprintf(cmd, "C:1:%s", (strcmp(Power2S[0].name, names[0])) ? "0" : "1");
+            sprintf(cmd, "C:1:%s", (strcmp(Power2S[0].getName(), names[0])) ? "0" : "1");
             bool allOk = sendCommand(cmd, res);
             Power2SP.s = allOk ? IPS_BUSY : IPS_ALERT;
             if (allOk)
-                IUUpdateSwitch(&Power2SP, states, names, n);
+                //IUUpdateSwitch(&Power2SP, states, names, n);
+                Power2SP.update(states, names, n);
 
-            IDSetSwitch(&Power2SP, nullptr);
+            //IDSetSwitch(&Power2SP, nullptr);
+            Power2SP.apply();
             return true;
         }
 
         // handle power line 3
-        if (!strcmp(name, Power3SP.name))
+        if (!strcmp(name, Power3SP.getName()))
         {
-            sprintf(cmd, "C:2:%s", (strcmp(Power3S[0].name, names[0])) ? "0" : "1");
+            sprintf(cmd, "C:2:%s", (strcmp(Power3S[0].getName(), names[0])) ? "0" : "1");
             bool allOk = sendCommand(cmd, res);
             Power3SP.s = allOk ? IPS_BUSY : IPS_ALERT;
             if (allOk)
-                IUUpdateSwitch(&Power3SP, states, names, n);
+                //IUUpdateSwitch(&Power3SP, states, names, n);
+                Power3SP.update(states, names, n);
 
-            IDSetSwitch(&Power3SP, nullptr);
+            //IDSetSwitch(&Power3SP, nullptr);
+            Power3SP.apply();
             return true;
         }
 
         // compensate now
-        if (!strcmp(name, CompensateNowSP.name))
+        if (!strcmp(name, CompensateNowSP.getName()))
         {
-            sprintf(cmd, "S:%d", static_cast<uint8_t>(FocuserSettingsN[FS_COMP_THRESHOLD].value));
+            sprintf(cmd, "S:%d", static_cast<uint8_t>(FocuserSettingsNP[FS_COMP_THRESHOLD].getValue()));
             bool allOk = sendCommand(cmd, res);
             CompensateNowSP.s = allOk ? IPS_BUSY : IPS_ALERT;
             if (allOk)
-                IUUpdateSwitch(&CompensateNowSP, states, names, n);
+                //IUUpdateSwitch(&CompensateNowSP, states, names, n);
+                CompensateNowSP.update(states, names, n);
 
-            IDSetSwitch(&CompensateNowSP, nullptr);
+            //IDSetSwitch(&CompensateNowSP, nullptr);
+            CompensateNowSP.apply();
             return true;
         }
 
         // Auto PWM
-        if (!strcmp(name, AutoPWMSP.name))
+        if (!strcmp(name, AutoPWMSP.getName()))
         {
-            IUUpdateSwitch(&AutoPWMSP, states, names, n);
+            //IUUpdateSwitch(&AutoPWMSP, states, names, n);
+            AutoPWMSP.update(states, names, n);
             AutoPWMSP.s = (setAutoPWM()) ? IPS_OK : IPS_ALERT;
-            IDSetSwitch(&AutoPWMSP, nullptr);
+            //IDSetSwitch(&AutoPWMSP, nullptr);
+            AutoPWMSP.apply();
             return true;
         }
 
         // Power default on
-        if (!strcmp(name, PowerDefaultOnSP.name))
+        if (!strcmp(name, PowerDefaultOnSP.getName()))
         {
             std::map<int, std::string> updates;
             updates[U_OUT1_DEF] = (states[0] == ISS_ON) ? "1" : "0";
@@ -471,8 +489,10 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
             if (updateSettings("u", "U", updates))
             {
                 PowerDefaultOnSP.s = IPS_BUSY;
-                IUUpdateSwitch(&PowerDefaultOnSP, states, names, n);
-                IDSetSwitch(&PowerDefaultOnSP, nullptr);
+                //IUUpdateSwitch(&PowerDefaultOnSP, states, names, n);
+                PowerDefaultOnSP.update(states, names, n);
+                //IDSetSwitch(&PowerDefaultOnSP, nullptr);
+                PowerDefaultOnSP.apply();
                 return true;
             }
             PowerDefaultOnSP.s = IPS_ALERT;
@@ -480,23 +500,27 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
         }
 
         // Auto PWM default on
-        if (!strcmp(name, AutoPWMDefaultOnSP.name))
+        if (!strcmp(name, AutoPWMDefaultOnSP.getName()))
         {
-            IUUpdateSwitch(&AutoPWMDefaultOnSP, states, names, n);
+            //IUUpdateSwitch(&AutoPWMDefaultOnSP, states, names, n);
+            AutoPWMDefaultOnSP.update(states, names, n);
             AutoPWMDefaultOnSP.s = IPS_OK;
             saveConfig();
-            IDSetSwitch(&AutoPWMDefaultOnSP, nullptr);
+            //IDSetSwitch(&AutoPWMDefaultOnSP, nullptr);
+            AutoPWMDefaultOnSP.apply();
             return true;
         }
 
         // Buzzer
-        if (!strcmp(name, BuzzerSP.name))
+        if (!strcmp(name, BuzzerSP.getName()))
         {
             if (updateSettings("j", "J", 1, (states[0] == ISS_ON) ? "1" : "0"))
             {
                 BuzzerSP.s = IPS_BUSY;
-                IUUpdateSwitch(&BuzzerSP, states, names, n);
-                IDSetSwitch(&BuzzerSP, nullptr);
+                //IUUpdateSwitch(&BuzzerSP, states, names, n);
+                //IDSetSwitch(&BuzzerSP, nullptr);
+                BuzzerSP.update(states, names, n);
+                BuzzerSP.apply();
                 return true;
             }
             BuzzerSP.s = IPS_ALERT;
@@ -504,14 +528,16 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
         }
 
         // Manual mode
-        if (!strcmp(name, FocuserManualSP.name))
+        if (!strcmp(name, FocuserManualSP.getName()))
         {
             sprintf(cmd, "F:%s", (strcmp(FocuserManualS[0].name, names[0])) ? "0" : "1");
             if (sendCommand(cmd, res))
             {
                 FocuserManualSP.s = IPS_BUSY;
-                IUUpdateSwitch(&FocuserManualSP, states, names, n);
-                IDSetSwitch(&FocuserManualSP, nullptr);
+                //IUUpdateSwitch(&FocuserManualSP, states, names, n);
+                //IDSetSwitch(&FocuserManualSP, nullptr);
+                FocuserManualSP.update(states, names, n);
+                FocuserManualSP.apply();
                 return true;
             }
             FocuserManualSP.s = IPS_ALERT;
@@ -519,22 +545,24 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
         }
 
         // Focuser Mode
-        if (!strcmp(name, FocuserModeSP.name))
+        if (!strcmp(name, FocuserModeSP.getName()))
         {
             std::string value = "0";
-            if (!strcmp(FocuserModeS[FS_MODE_UNI].name, names[0]))
+            if (!strcmp(FocuserModeS[FS_MODE_UNI].getName(), names[0]))
                 value = "0";
-            if (!strcmp(FocuserModeS[FS_MODE_BI].name, names[0]))
+            if (!strcmp(FocuserModeS[FS_MODE_BI].getName(), names[0]))
                 value = "1";
-            if (!strcmp(FocuserModeS[FS_MODE_MICRO_L].name, names[0]))
+            if (!strcmp(FocuserModeS[FS_MODE_MICRO_L].getName(), names[0]))
                 value = "2";
-            if (!strcmp(FocuserModeS[FS_MODE_MICRO_H].name, names[0]))
+            if (!strcmp(FocuserModeS[FS_MODE_MICRO_H].getName(), names[0]))
                 value = "3";
             if (updateSettings("u", "U", U_STEPPER_MODE, value.c_str()))
             {
                 FocuserModeSP.s = IPS_BUSY;
-                IUUpdateSwitch(&FocuserModeSP, states, names, n);
-                IDSetSwitch(&FocuserModeSP, nullptr);
+                //IUUpdateSwitch(&FocuserModeSP, states, names, n);
+                //IDSetSwitch(&FocuserModeSP, nullptr);
+                FocuserModeSP.update(states, names, n);
+                FocuserModeSP.apply();
                 return true;
             }
             FocuserModeSP.s = IPS_ALERT;
@@ -542,16 +570,18 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
         }
 
         // Focuser compensation mode
-        if (!strcmp(name, FocuserCompModeSP.name))
+        if (!strcmp(name, FocuserCompModeSP.getName()))
         {
             std::string value = "0";
-            if (!strcmp(FocuserCompModeS[FS_COMP_AUTO].name, names[0]))
+            if (!strcmp(FocuserCompModeS[FS_COMP_AUTO].getName(), names[0]))
                 value = "1";
             if (updateSettings("e", "E", E_COMP_AUTO, value.c_str()))
             {
                 FocuserCompModeSP.s = IPS_BUSY;
-                IUUpdateSwitch(&FocuserCompModeSP, states, names, n);
-                IDSetSwitch(&FocuserCompModeSP, nullptr);
+                //IUUpdateSwitch(&FocuserCompModeSP, states, names, n);
+                //IDSetSwitch(&FocuserCompModeSP, nullptr);
+                FocuserCompModeSP.update(states, names, n);
+                FocuserCompModeSP.apply();
                 return true;
             }
             FocuserCompModeSP.s = IPS_ALERT;
@@ -559,16 +589,18 @@ bool IndiAstrolink4USB::ISNewSwitch(const char *dev, const char *name, ISState *
         }
 
         // Focuser stepper holding torque mode
-        if (!strcmp(name, FocuserHoldSP.name))
+        if (!strcmp(name, FocuserHoldSP.getName()))
         {
             std::string value = "3";
-            if (!strcmp(FocuserHoldS[FS_HOLD_ON].name, names[0]))
+            if (!strcmp(FocuserHoldS[FS_HOLD_ON].getName(), names[0]))
                 value = "2";
             if (updateSettings("z", "Z", Z_STOP_CURRENT, value.c_str()))
             {
                 FocuserHoldSP.s = IPS_BUSY;
-                IUUpdateSwitch(&FocuserHoldSP, states, names, n);
-                IDSetSwitch(&FocuserHoldSP, nullptr);
+                //IUUpdateSwitch(&FocuserHoldSP, states, names, n);
+                // IDSetSwitch(&FocuserHoldSP, nullptr);
+                FocuserHoldSP.update(states, names, n);
+                FocuserHoldSP.apply();
                 return true;
             }
             FocuserHoldSP.s = IPS_ALERT;
@@ -589,13 +621,15 @@ bool IndiAstrolink4USB::ISNewText(const char *dev, const char *name, char *texts
     if (dev && !strcmp(dev, getDeviceName()))
     {
         // Power Labels
-        if (!strcmp(name, PowerControlsLabelsTP.name))
+        if (!strcmp(name, PowerControlsLabelsTP.getName()))
         {
-            IUUpdateText(&PowerControlsLabelsTP, texts, names, n);
+            //IUUpdateText(&PowerControlsLabelsTP, texts, names, n);
+            PowerControlsLabelsTP.update(texts, names, n);
             PowerControlsLabelsTP.s = IPS_OK;
             LOG_INFO("Power port labels saved. Driver must be restarted for the labels to take effect.");
             saveConfig();
-            IDSetText(&PowerControlsLabelsTP, nullptr);
+            //IDSetText(&PowerControlsLabelsTP, nullptr);
+            PowerControlsLabelsTP.apply();
             return true;
         }
     }
@@ -639,9 +673,9 @@ IPState IndiAstrolink4USB::MoveAbsFocuser(uint32_t targetTicks)
     int32_t backlash = 0;
     if (backlashEnabled)
     {
-        if ((targetTicks > FocusAbsPosN[0].value) == (backlashSteps > 0))
+        if ((targetTicks > FocusAbsPosNP[0].getValue()) == (backlashSteps > 0))
         {
-            if ((targetTicks + backlash) < 0 || (targetTicks + backlash) > FocusMaxPosN[0].value)
+            if ((targetTicks + backlash) < 0 || (targetTicks + backlash) > FocusMaxPosNP[0].getValue())
             {
                 backlash = 0;
             }
@@ -659,7 +693,7 @@ IPState IndiAstrolink4USB::MoveAbsFocuser(uint32_t targetTicks)
 
 IPState IndiAstrolink4USB::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
 {
-    return MoveAbsFocuser(dir == FOCUS_INWARD ? FocusAbsPosN[0].value - ticks : FocusAbsPosN[0].value + ticks);
+    return MoveAbsFocuser(dir == FOCUS_INWARD ? FocusAbsPosNP[0].getValue() - ticks : FocusAbsPosNP[0].getValue() + ticks);
 }
 
 bool IndiAstrolink4USB::AbortFocuser()
@@ -796,7 +830,7 @@ bool IndiAstrolink4USB::sensorRead()
         std::vector<std::string> result = split(res, ":");
 
         float focuserPosition = std::stod(result[Q_STEPPER_POS]);
-        FocusAbsPosN[0].value = focuserPosition;
+        FocusAbsPosNP[0].getValue() = focuserPosition;
         FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
         float stepsToGo = std::stod(result[Q_STEPS_TO_GO]);
         if (stepsToGo == 0)
@@ -932,7 +966,7 @@ bool IndiAstrolink4USB::sensorRead()
 
             FocuserSettingsN[FS_SPEED].value = std::stod(result[U_SPEED]);
             FocuserSettingsN[FS_STEP_SIZE].value = std::stod(result[U_STEPSIZE]) / 100.0;
-            FocusMaxPosN[0].value = std::stod(result[U_MAX_POS]);
+            FocusMaxPosNP[0].setValue(std::stod(result[U_MAX_POS]));
             FocuserSettingsNP.s = IPS_OK;
             IDSetNumber(&FocuserSettingsNP, nullptr);
             IDSetNumber(&FocusMaxPosNP, nullptr);

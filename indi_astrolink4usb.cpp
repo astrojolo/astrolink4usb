@@ -641,7 +641,7 @@ IPState IndiAstrolink4USB::MoveAbsFocuser(uint32_t targetTicks)
     {
         if ((targetTicks > FocusMaxPosNP[0].getValue()) == (backlashSteps > 0))
         {
-            if ((targetTicks + backlash) < 0 || (targetTicks + backlash) > FocusMaxPosN[0].value)
+            if ((targetTicks + backlash) < 0 || (targetTicks + backlash) > FocusMaxPosNP[0].getValue)
             {
                 backlash = 0;
             }
@@ -817,7 +817,7 @@ bool IndiAstrolink4USB::sensorRead()
             FocusPosMMNP.s = IPS_BUSY;
         }
         FocusAbsPosNP.apply();
-        FocusRelPosNP.apply()
+        FocusRelPosNP.apply();
         IDSetNumber(&FocusPosMMNP, nullptr);
         PowerDataN[POW_ITOT].value = std::stod(result[Q_CURRENT]);
 

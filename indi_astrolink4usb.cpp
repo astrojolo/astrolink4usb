@@ -641,7 +641,7 @@ IPState IndiAstrolink4USB::MoveAbsFocuser(uint32_t targetTicks)
     {
         if ((targetTicks > FocusMaxPosNP[0].getValue()) == (backlashSteps > 0))
         {
-            if ((targetTicks + backlash) < 0 || (targetTicks + backlash) > FocusMaxPosNP[0].getValue)
+            if ((targetTicks + backlash) < 0 || (targetTicks + backlash) > FocusMaxPosNP[0].getValue())
             {
                 backlash = 0;
             }

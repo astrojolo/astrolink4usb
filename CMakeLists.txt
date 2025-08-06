@@ -17,6 +17,8 @@ include_directories( ${INDI_INCLUDE_DIR})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/indi_astrolink4usb.xml.cmake ${CMAKE_CURRENT_BINARY_DIR}/indi_astrolink4usb.xml )
 
+include(CMakeCommon)
+
 ################ AstroLink4 ################
 
 set(indi_astrolink4usb_SRCS
